@@ -2,11 +2,7 @@ const app = require("express")();
 const server = require("http").createServer(app);
 const cors = require("cors");
 
-// ice server --------------------
-var freeice = require('freeice');
-var quickconnect = require('rtc-quickconnect');
 
-// -----------------------------------------
 
 
 const io = require("socket.io")(server, {
@@ -24,30 +20,7 @@ app.get('/', (req, res) => {
     res.send('Running');
 });
 
-// ice server------------------------------------
-var qcOpts = {
-    room: 'icetest',
-    iceServers: freeice()
-};
 
-// go ahead and connect
-quickconnect('http://rtc.io/switchboard', qcOpts)
-    .createDataChannel('chat')
-    .once('channel:opened:chat', function (peerId, dc) {
-        console.log('data channel opened for peer id: ' + peerId);
-
-        dc.onmessage = function (evt) {
-            console.log('peer ' + peerId + ' says: ' + evt.data);
-        };
-
-        dc.send('hi');
-    });
-
-
-
-
-
-// ------------------------------------------------
 
 io.on("connection", (socket) => {
     socket.emit("me", socket.id);
